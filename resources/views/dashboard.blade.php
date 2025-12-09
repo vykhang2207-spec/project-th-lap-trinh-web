@@ -45,18 +45,22 @@
                                     GV: {{ $enrollment->course->teacher->name }}
                                 </p>
 
-                                {{-- Progress Bar (Giả lập) --}}
+                                {{-- Progress Bar (Đã tính toán thật) --}}
                                 <div class="mt-auto">
+                                    {{-- Tính toán phần trăm 1 lần để dùng cho tiện --}}
+                                    @php $percent = $enrollment->course->progress(); @endphp
+
                                     <div class="flex justify-between text-xs mb-1">
                                         <span>Tiến độ</span>
-                                        <span class="font-bold text-indigo-600">0%</span> {{-- Sau này sẽ tính thật --}}
+                                        <span class="font-bold text-indigo-600">{{ $percent }}%</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                        {{-- Style width theo phần trăm --}}
+                                        <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
                                     </div>
 
                                     <a href="{{ route('course.show', $enrollment->course) }}" class="mt-4 block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 px-4 rounded transition">
-                                        Vào học
+                                        {{ $percent == 100 ? 'Học lại' : 'Vào học' }}
                                     </a>
                                 </div>
                             </div>

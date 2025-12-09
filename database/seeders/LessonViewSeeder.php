@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB; // 👇 Quan trọng
 use App\Models\Lesson;
 use App\Models\User;
 
@@ -11,34 +11,30 @@ class LessonViewSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Lấy danh sách Users và Lessons đang có
-        $users = User::all();
+        // 1. Lấy danh sách Users (Học viên) và Lessons
+        $students = User::where('role', 'student')->get();
         $lessons = Lesson::all();
 
-        // Kiểm tra nếu chưa có data thì thôi
-        if ($users->isEmpty() || $lessons->isEmpty()) {
+        if ($students->isEmpty() || $lessons->isEmpty()) {
             return;
         }
 
-        // 2. Duyệt qua từng bài học
-        foreach ($lessons as $lesson) {
-            // Random: Mỗi bài học sẽ có từ 0 đến 5 người xem ngẫu nhiên
-            $randomViewers = $users->random(min($users->count(), rand(0, 5)));
+        // 2. Tạo 200 lượt xem ngẫu nhiên
+        for ($i = 0; $i < 200; $i++) {
+            $student = $students->random();
+            $lesson = $lessons->random();
 
-            foreach ($randomViewers as $user) {
-                // Kiểm tra xem đã view chưa bằng DB query trực tiếp (vì không có Model LessonView)
-                $exists = DB::table('lesson_views')
-                    ->where('user_id', $user->id)
-                    ->where('lesson_id', $lesson->id)
-                    ->exists();
-
-                if (!$exists) {
-                    // 3. Gắn User vào Lesson
-                    $lesson->viewers()->attach($user->id, [
-                        'last_viewed_at' => fake()->dateTimeBetween('-1 month', 'now')
-                    ]);
-                }
-            }
+            // Sử dụng updateOrInsert để tránh lỗi trùng lặp (Duplicate Entry)
+            // Cú pháp: (Điều kiện tìm), (Dữ liệu update/insert)
+            DB::table('lesson_views')->updateOrInsert(
+                [
+                    'user_id' => $student->id,
+                    'lesson_id' => $lesson->id,
+                ],
+                [
+                    'last_viewed_at' => fake()->dateTimeBetween('-1 month', 'now')
+                ]
+            );
         }
     }
 }

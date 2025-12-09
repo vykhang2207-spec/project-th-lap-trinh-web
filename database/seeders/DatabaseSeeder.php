@@ -15,7 +15,7 @@ use Database\Seeders\ChapterSeeder;
 use Database\Seeders\LessonSeeder;
 use Database\Seeders\TransactionSeeder;
 use Database\Seeders\EnrollmentSeeder;
-use Database\Seeders\LessonViewSeeder; // <-- Import cái mới tạo
+use Database\Seeders\LessonViewSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,13 +29,13 @@ class DatabaseSeeder extends Seeder
             LessonSeeder::class,
             TransactionSeeder::class,
             EnrollmentSeeder::class,
-
-            // Gọi Seeder tạo View riêng biệt (Gọn gàng hơn)
-            LessonViewSeeder::class,
+            LessonViewSeeder::class, // Đã fix lỗi ở trên
         ]);
 
-        // 2. LOGIC TẠO COMMENT VÀ REACTION (Giữ lại ở đây cho tiện)
+        // 2. LOGIC TẠO COMMENT VÀ REACTION (Giữ nguyên tại đây)
         $this->createCommentsAndReactions();
+
+        $this->command->info('✅ Tất cả dữ liệu mẫu đã được tạo thành công!');
     }
 
     /**
@@ -43,12 +43,10 @@ class DatabaseSeeder extends Seeder
      */
     private function createCommentsAndReactions(): void
     {
-        $users = User::all();
+        $users = User::where('role', 'student')->get(); // Chỉ lấy học viên để comment
         $courses = Course::all();
 
-        // Kiểm tra dữ liệu
         if ($users->isEmpty() || $courses->isEmpty()) {
-            $this->command->warn('Skipping Comments/Reactions: No Users or Courses found.');
             return;
         }
 
@@ -56,7 +54,6 @@ class DatabaseSeeder extends Seeder
 
         foreach ($courses as $course) {
             // A. TẠO COMMENT (Ngẫu nhiên 0-3 comment mỗi khóa)
-            // Lấy ngẫu nhiên vài user (tối đa 3 người)
             $randomCommenters = $users->random(min($users->count(), rand(0, 3)));
 
             foreach ($randomCommenters as $user) {
@@ -67,11 +64,10 @@ class DatabaseSeeder extends Seeder
             }
 
             // B. TẠO REACTION (LIKE/DISLIKE)
-            // Lấy ngẫu nhiên vài user (tối đa 5 người)
             $randomReactors = $users->random(min($users->count(), rand(0, 5)));
 
             foreach ($randomReactors as $user) {
-                // Kiểm tra xem user đã like chưa để tránh lỗi trùng lặp (Unique Key)
+                // Kiểm tra xem user đã like chưa
                 $hasReacted = CourseReaction::where('user_id', $user->id)
                     ->where('course_id', $course->id)
                     ->exists();
@@ -84,7 +80,5 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
-
-        $this->command->info('Comments and Reactions generated successfully!');
     }
 }

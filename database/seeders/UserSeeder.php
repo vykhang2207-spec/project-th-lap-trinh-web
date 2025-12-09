@@ -9,7 +9,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Tạo 1 Admin cứng
+        // 1. Tạo 1 Admin cứng để test
         User::factory()->admin()->create([
             'name' => 'Admin Boss',
             'email' => 'admin@test.com',

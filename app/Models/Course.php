@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough; // Import thêm cái này
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+// 👇 1. Import Facade Auth vào đây để sửa lỗi
+use Illuminate\Support\Facades\Auth;
 
-// Import đầy đủ các Model liên quan
+// Import đầy đủ
 use App\Models\User;
 use App\Models\Chapter;
-use App\Models\Lesson;          // Thêm Lesson
+use App\Models\Lesson;
 use App\Models\Enrollment;
-use App\Models\Comment;         // Thêm Comment
-use App\Models\CourseReaction;  // Thêm CourseReaction (Thay vì Reaction)
+use App\Models\Comment;
+use App\Models\CourseReaction;
 
 class Course extends Model
 {
@@ -30,49 +32,80 @@ class Course extends Model
     ];
 
     /* =========================================
-     * ĐỊNH NGHĨA MỐI QUAN HỆ (RELATIONSHIPS)
+     * RELATIONSHIPS
      * ========================================= */
 
-    // 1. Khóa học thuộc về một Giảng viên
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    // 2. Khóa học có nhiều Chương học
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class);
     }
 
-    // 3. Khóa học có nhiều Học viên đã đăng ký
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
     }
 
-    // 4. Lấy TẤT CẢ Bài học của Khóa (Xuyên qua bảng Chapter)
-    // Giúp tính tổng view dễ dàng hơn: $course->lessons
+    // Quan trọng để đếm tổng số bài học
     public function lessons(): HasManyThrough
     {
         return $this->hasManyThrough(Lesson::class, Chapter::class);
     }
 
-    // 5. Khóa học có nhiều Bình luận
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    // 6. Lấy danh sách Likes (Từ bảng course_reactions)
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(CourseReaction::class);
+    }
+
     public function likes(): HasMany
     {
         return $this->hasMany(CourseReaction::class)->where('type', 'like');
     }
 
-    // 7. Lấy danh sách Dislikes (Từ bảng course_reactions)
     public function dislikes(): HasMany
     {
         return $this->hasMany(CourseReaction::class)->where('type', 'dislike');
+    }
+
+    // Helper function check nhanh trạng thái của User
+    public function isReactedBy(?User $user)
+    {
+        if (!$user) return null;
+        return $this->reactions()->where('user_id', $user->id)->first();
+    }
+
+    // 👇 HÀM TÍNH TIẾN ĐỘ ĐÃ SỬA LỖI
+    public function progress()
+    {
+        // 1. Nếu chưa đăng nhập (Guest) -> Tiến độ là 0%
+        if (!Auth::check()) {
+            return 0;
+        }
+
+        // 2. Tổng số bài học của khóa
+        $totalLessons = $this->lessons()->count();
+
+        if ($totalLessons == 0) {
+            return 0;
+        }
+
+        // 3. Số bài đã học
+        // Sử dụng Auth::id() thay vì auth()->id() để code chuẩn hơn và IDE không báo lỗi
+        $completedLessons = $this->lessons()
+            ->join('lesson_views', 'lessons.id', '=', 'lesson_views.lesson_id')
+            ->where('lesson_views.user_id', Auth::id())
+            ->count();
+
+        // 4. Tính phần trăm
+        return round(($completedLessons / $totalLessons) * 100);
     }
 }

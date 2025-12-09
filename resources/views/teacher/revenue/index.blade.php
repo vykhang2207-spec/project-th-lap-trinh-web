@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-green-500">
-                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Tổng thu nhập (Trọn đời)</div>
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Doanh thu</div>
                     <div class="mt-2 text-3xl font-bold text-green-600">
                         {{ number_format($totalEarned) }} đ
                     </div>
@@ -43,8 +43,7 @@
                     <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                         <span>💸</span> Yêu cầu Rút tiền
                     </h3>
-                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-bold">
-                        Auto-Duyệt đơn < 500k </span>
+
                 </div>
 
                 {{-- Thông báo --}}

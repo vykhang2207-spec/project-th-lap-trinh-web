@@ -65,8 +65,13 @@
                                             </a>
 
                                             <span class="text-gray-300 dark:text-gray-600 text-xs">|</span>
-                                            <a href="{{ route('teacher.courses.show', $course->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4 font-bold" title="Xem chi tiết">
-                                                👁️ Xem
+                                            {{-- Nút Xem (Icon Con mắt) --}}
+
+                                            <a href="{{ route('teacher.courses.show', $course->id) }}" class="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-200 p-1 rounded-md transition duration-150 hover:bg-gray-100 dark:hover:bg-gray-700 mr-1" title="Xem chi tiết">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
                                             </a>
                                             {{-- Nút Sửa (Icon) --}}
                                             <a href="{{ route('teacher.courses.edit', $course) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200 p-1 rounded-md transition duration-150 hover:bg-gray-100 dark:hover:bg-gray-700" title="Sửa khóa học">
