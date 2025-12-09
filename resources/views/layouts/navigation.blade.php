@@ -10,19 +10,18 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    {{-- 1. Link Trang Chủ (Ai cũng thấy) --}}
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Trang chủ') }}
                     </x-nav-link>
 
                     @auth
-                    {{-- TRƯỜNG HỢP 1: HỌC VIÊN --}}
+                    {{-- HỌC VIÊN --}}
                     @if(Auth::user()->role === 'student')
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Khóa học của tôi') }}
                     </x-nav-link>
 
-                    {{-- TRƯỜNG HỢP 2: GIÁO VIÊN --}}
+                    {{-- GIÁO VIÊN --}}
                     @elseif(Auth::user()->role === 'teacher')
                     <x-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')">
                         {{ __('Quản lý Khóa học') }}
@@ -31,7 +30,7 @@
                         {{ __('Doanh thu') }}
                     </x-nav-link>
 
-                    {{-- TRƯỜNG HỢP 3: ADMIN --}}
+                    {{-- ADMIN --}}
                     @elseif(Auth::user()->role === 'admin')
                     <x-nav-link :href="route('admin.transactions.index')" :active="request()->routeIs('admin.transactions.*')">
                         {{ __('Quản lý Dòng tiền') }}
@@ -49,7 +48,17 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div class="flex flex-col items-end">
+                                <div class="font-bold">{{ Auth::user()->name }}</div>
+
+                                {{-- 👇 HIỂN THỊ SỐ DƯ VÍ CHO ADMIN & TEACHER --}}
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'teacher')
+                                <div class="text-xs text-green-600 font-bold">
+                                    Ví: {{ number_format(Auth::user()->account_balance) }} đ
+                                </div>
+                                @endif
+                            </div>
+
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -94,13 +103,10 @@
             </x-responsive-nav-link>
 
             @auth
-            {{-- MOBILE: HỌC VIÊN --}}
             @if(Auth::user()->role === 'student')
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Khóa học của tôi') }}
             </x-responsive-nav-link>
-
-            {{-- MOBILE: GIÁO VIÊN --}}
             @elseif(Auth::user()->role === 'teacher')
             <x-responsive-nav-link :href="route('teacher.courses.index')" :active="request()->routeIs('teacher.courses.*')">
                 {{ __('Quản lý Khóa học') }}
@@ -108,8 +114,6 @@
             <x-responsive-nav-link :href="route('teacher.revenue.index')" :active="request()->routeIs('teacher.revenue.*')">
                 {{ __('Doanh thu') }}
             </x-responsive-nav-link>
-
-            {{-- MOBILE: ADMIN --}}
             @elseif(Auth::user()->role === 'admin')
             <x-responsive-nav-link :href="route('admin.transactions.index')" :active="request()->routeIs('admin.transactions.*')">
                 {{ __('Quản lý Dòng tiền') }}
@@ -126,6 +130,13 @@
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+
+                {{-- 👇 HIỂN THỊ SỐ DƯ VÍ TRÊN MOBILE --}}
+                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'teacher')
+                <div class="mt-1 text-sm text-green-600 font-bold">
+                    Ví: {{ number_format(Auth::user()->account_balance) }} đ
+                </div>
+                @endif
             </div>
 
             <div class="mt-3 space-y-1">

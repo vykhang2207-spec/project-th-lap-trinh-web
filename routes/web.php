@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\MomoSimulationController;
 use App\Http\Controllers\TeacherRevenueController;
 use App\Http\Controllers\AdminTransactionController;
 use App\Http\Controllers\AdminCourseController;
+use App\Http\Controllers\TeacherWithdrawalController;
 // 👇 Import Controller của Giáo viên
 use App\Http\Controllers\Teacher\CourseController as TeacherCourseController;
 use Illuminate\Support\Facades\Auth;
@@ -96,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
 
         // 4. Xem Doanh thu (Của riêng giáo viên)
         Route::get('/revenue', [TeacherRevenueController::class, 'index'])->name('revenue.index');
+        Route::post('/withdraw', [TeacherWithdrawalController::class, 'store'])->name('withdraw.store');
     });
 
 

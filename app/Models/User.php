@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Transaction;
-use App\Models\LessonView;
+use App\Models\Lesson;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role', // Quan trọng: Thêm 'role' cho phân quyền (admin, teacher, student)
+        'account_balance',
     ];
 
     /**
@@ -70,8 +72,16 @@ class User extends Authenticatable
     }
 
     // 4. (Tiện tay thêm luôn) Một User có nhiều tiến độ học (LessonView)
-    public function lessonViews(): HasMany
+
+    public function withdrawals()
     {
-        return $this->hasMany(LessonView::class);
+        return $this->hasMany(Withdrawal::class);
+    }
+    // 👇 ĐÃ SỬA: Thay LessonView bằng viewedLessons (Quan hệ N-N)
+    // Giúp lấy được danh sách các bài học mà User này đã xem
+    public function viewedLessons(): BelongsToMany
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_views', 'user_id', 'lesson_id')
+            ->withPivot('last_viewed_at');
     }
 }
