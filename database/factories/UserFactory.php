@@ -32,12 +32,17 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-
-            // Hash mật khẩu, sử dụng lại giá trị nếu đã hash
+            'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+            'role' => 'student', // Mặc định là học viên
 
-            // Thêm vai trò mặc định là student
-            'role' => 'student',
+            // 👇 THÊM DỮ LIỆU NGÂN HÀNG GIẢ LẬP
+            'bank_name' => fake()->randomElement(['Vietcombank', 'MBBank', 'Techcombank', 'ACB', 'BIDV', 'VPBank']),
+            'bank_account_number' => fake()->numerify('##########'), // 10 số ngẫu nhiên
+            'bank_account_name' => function (array $attributes) {
+                return strtoupper($attributes['name']); // Tên chủ TK viết hoa giống tên User
+            },
         ];
     }
 

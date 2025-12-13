@@ -52,11 +52,7 @@
                                 <div class="font-bold">{{ Auth::user()->name }}</div>
 
                                 {{-- 👇 HIỂN THỊ SỐ DƯ VÍ CHO ADMIN & TEACHER --}}
-                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'teacher')
-                                <div class="text-xs text-green-600 font-bold">
-                                    Ví: {{ number_format(Auth::user()->account_balance) }} đ
-                                </div>
-                                @endif
+
                             </div>
 
                             <div class="ms-1">
@@ -77,9 +73,9 @@
                 </x-dropdown>
                 @else
                 <div class="space-x-4">
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline hover:text-indigo-600 dark:hover:text-indigo-400">{{ __('Log in') }}</a>
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline hover:text-indigo-600 dark:hover:text-indigo-400">{{ __('Đăng nhập') }}</a>
                     @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline hover:text-indigo-600 dark:hover:text-indigo-400">{{ __('Register') }}</a>
+                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline hover:text-indigo-600 dark:hover:text-indigo-400">{{ __('Đăng ký') }}</a>
                     @endif
                 </div>
                 @endauth

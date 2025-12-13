@@ -61,16 +61,16 @@
 
                         {{-- Nút Like --}}
                         <button @click="react('like')" :disabled="isLoading" class="flex items-center px-4 py-2 bg-[#1f2937] rounded-lg transition hover:bg-gray-700 shadow-sm group" :class="myReaction === 'like' ? 'ring-1 ring-green-500 bg-gray-800' : ''">
-                            <svg class="w-6 h-6 mr-2 transition-transform active:scale-110" :class="myReaction === 'like' ? 'text-green-500 fill-current' : 'text-green-500 fill-current'" viewBox="0 0 24 24">
-                                <path d="M14 9.5a2 2 0 00-2-2h-2.5V3.5a1.5 1.5 0 00-2.66-1.06l-6.5 6.5A1.5 1.5 0 00.5 10v9A1.5 1.5 0 002 20.5h14.88a1.5 1.5 0 001.45-1.14l2.5-9A1.5 1.5 0 0019.38 8H14z" /></svg>
-                            <span class="text-xl font-bold text-gray-200" x-text="likes"></span>
+                            <svg class="w-4 h-4 mr-1 transition-colors duration-200" :class="myReaction === 'like' ? 'fill-current' : 'text-green-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
+                            <span x-text="likes"></span>
                         </button>
 
                         {{-- Nút Dislike --}}
                         <button @click="react('dislike')" :disabled="isLoading" class="flex items-center px-4 py-2 bg-[#1f2937] rounded-lg transition hover:bg-gray-700 shadow-sm group" :class="myReaction === 'dislike' ? 'ring-1 ring-red-500 bg-gray-800' : ''">
-                            <svg class="w-6 h-6 mr-2 transition-transform active:scale-110" :class="myReaction === 'dislike' ? 'text-red-500 fill-current' : 'text-red-500 fill-current'" viewBox="0 0 24 24">
-                                <path d="M10 14.5a2 2 0 002 2h2.5v4a1.5 1.5 0 002.66 1.06l6.5-6.5A1.5 1.5 0 0023.5 14v-9A1.5 1.5 0 0022 3.5H7.12a1.5 1.5 0 00-1.45 1.14l-2.5 9a1.5 1.5 0 001.45 1.86H10z" /></svg>
-                            <span class="text-xl font-bold text-gray-200" x-text="dislikes"></span>
+                            <svg class="w-4 h-4 mr-1 transition-colors duration-200" :class="myReaction === 'dislike' ? 'fill-current' : 'text-red-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" /></svg>
+                            <span x-text="dislikes"></span>
                         </button>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                     <h3 class="text-3xl font-bold mb-6 text-white flex items-center"><span class="bg-indigo-500 w-2 h-8 mr-4 rounded-full"></span>Giới thiệu khóa học</h3>
                     <div class="leading-relaxed whitespace-pre-line text-lg text-gray-300/90">{{ $course->description }}</div>
                     <div class="mt-10 flex items-center p-6 bg-gray-800/60 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition duration-300 group">
-                        <div class="w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center font-bold text-indigo-300 uppercase text-2xl border-2 border-indigo-500/30 group-hover:border-indigo-400 transition">{{ substr($course->teacher->name ?? 'T', 0, 1) }}</div>
+                        <div class="w-16 h-16 bg-indigo-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold uppercase border-2 border-indigo-400/50 text-lg shadow-md">{{ substr($course->teacher->name ?? 'T', 0, 1) }}</div>
                         <div class="ml-6">
                             <p class="text-xs text-gray-400 uppercase tracking-widest mb-1 font-semibold">Giảng viên</p><a href="{{ route('teacher.profile', $course->teacher_id) }}" class="font-bold text-white text-2xl hover:text-indigo-400 transition">{{ $course->teacher->name ?? 'Ẩn danh' }}</a>
                         </div>
@@ -218,7 +218,7 @@
                     <div class="space-y-8">
                         @forelse($comments as $comment)
                         <div class="flex gap-5 group transition duration-300">
-                            <div class="flex-shrink-0 w-12 h-12 bg-gray-700/80 rounded-full flex items-center justify-center text-gray-300 font-bold uppercase text-sm border border-gray-600 group-hover:border-gray-500 transition shadow-sm">{{ substr($comment->user->name, 0, 1) }}</div>
+                            <div class="w-12 h-12 bg-indigo-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold uppercase border-2 border-indigo-400/50 text-lg shadow-md">{{ substr($comment->user->name, 0, 1) }}</div>
                             <div class="flex-grow">
                                 <div class="bg-gray-800/80 p-5 rounded-2xl rounded-tl-none border border-white/10 group-hover:border-gray-600/80 transition shadow-sm relative top-2">
                                     <div class="flex justify-between items-start mb-3">

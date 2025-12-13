@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Course;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $course_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Course|null $course
+ * @property-read User|null $user
+ * @method static \Database\Factories\EnrollmentFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment whereCourseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Enrollment whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Enrollment extends Model
 {
     use HasFactory;

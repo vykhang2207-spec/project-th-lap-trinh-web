@@ -10,50 +10,52 @@ class TeacherRevenueController extends Controller
 {
     public function index()
     {
-        // 1. Lấy User hiện tại (Giáo viên)
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 2. Lấy Lịch sử Giao dịch (TIỀN VÀO - Bán khóa học)
+        // 1. Lịch sử Bán khóa học (Để GV biết mình bán được gì)
         $transactions = Transaction::whereHas('course', function ($query) use ($user) {
             $query->where('teacher_id', $user->id);
         })
-            ->where('status', 'success') // Chỉ lấy giao dịch thành công
-            ->with(['course', 'user'])   // Load kèm thông tin
+            ->where('status', 'success')
+            ->with(['course', 'user'])
             ->latest()
-            // 👇 QUAN TRỌNG: Đặt tên biến page là 'trans_page' để không trùng với bảng rút tiền
-            ->paginate(5, ['*'], 'trans_page');
+            ->paginate(10, ['*'], 'trans_page');
 
-        // 3. Lấy Lịch sử Rút tiền (TIỀN RA)
-        // (Sử dụng relationship withdrawals đã khai báo trong User model)
-        $withdrawals = $user->withdrawals()
+        // 2. Lịch sử Nhận Lương (Payouts)
+        // Sử dụng relationship payouts() mới tạo trong User Model
+        $payouts = $user->payouts()
             ->latest()
-            // 👇 QUAN TRỌNG: Đặt tên biến page là 'withdraw_page'
-            ->paginate(5, ['*'], 'withdraw_page');
+            ->paginate(5, ['*'], 'payout_page');
 
-        // 4. Các con số thống kê
+        // 3. CÁC CON SỐ THỐNG KÊ
 
-        // A. Số dư khả dụng (Lấy trực tiếp từ DB User)
-        $currentBalance = $user->account_balance;
-
-        // B. Tổng thu nhập trọn đời (Tổng teacher_earning của các đơn thành công)
-        $totalEarned = Transaction::whereHas('course', function ($query) use ($user) {
+        // A. Doanh thu chờ thanh toán (Pending Balance)
+        $pendingBalance = Transaction::whereHas('course', function ($query) use ($user) {
             $query->where('teacher_id', $user->id);
-        })->where('status', 'success')->sum('teacher_earning');
+        })
+            ->where('status', 'success')
+            ->where('payout_status', 'pending')
+            ->sum('teacher_earning');
 
-        // C. Tổng số tiền đã rút thành công
-        $totalWithdrawn = $user->withdrawals()
-            ->where('status', 'approved')
+        // B. Tổng thu nhập trọn đời (Lifetime Earnings)
+        $lifetimeEarnings = Transaction::whereHas('course', function ($query) use ($user) {
+            $query->where('teacher_id', $user->id);
+        })
+            ->where('status', 'success')
+            ->sum('teacher_earning');
+
+        // C. Tổng tiền đã được Admin trả (Total Paid)
+        $totalPaid = $user->payouts()
+            ->where('status', 'completed')
             ->sum('amount');
 
-        // 5. Trả về View với đầy đủ dữ liệu
-        // Lưu ý: View cần sửa lại để nhận các biến mới này (như mình đã gửi ở bước trước)
         return view('teacher.revenue.index', compact(
             'transactions',
-            'withdrawals',
-            'currentBalance',
-            'totalEarned',
-            'totalWithdrawn'
+            'payouts',
+            'pendingBalance',
+            'lifetimeEarnings',
+            'totalPaid'
         ));
     }
 }

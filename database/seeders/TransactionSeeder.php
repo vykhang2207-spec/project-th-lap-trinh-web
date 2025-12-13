@@ -6,12 +6,13 @@ use Illuminate\Database\Seeder;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Enrollment;
 
 class TransactionSeeder extends Seeder
 {
     public function run(): void
     {
-        // CHỈ lấy user là 'student'
+        // 1. Lấy danh sách Học viên và Khóa học
         $students = User::where('role', 'student')->get();
         $courses = Course::all();
 
@@ -19,28 +20,55 @@ class TransactionSeeder extends Seeder
             return;
         }
 
-        // Tạo 50 giao dịch
-        foreach (range(1, 50) as $index) {
-            $student = $students->random();
-            $course = $courses->random();
+        foreach ($students as $student) {
 
-            $price = $course->price > 0 ? $course->price : rand(100000, 2000000);
-            $tax = $price * 0.10;
-            $adminFee = $price * 0.20;
-            $teacherEarning = $price - $tax - $adminFee;
+            // Mỗi học viên mua ngẫu nhiên 1-4 khóa học
+            $randomCourses = $courses->random(min($courses->count(), rand(1, 4)));
 
-            Transaction::create([
-                'user_id' => $student->id,
-                'course_id' => $course->id,
-                'total_amount' => $price,
-                'tax_amount' => $tax,
-                'admin_fee' => $adminFee,
-                'teacher_earning' => $teacherEarning,
-                'payment_method' => 'momo',
-                'status' => 'success',
-                'transaction_id' => 'MOMO' . rand(10000000, 99999999),
-                'created_at' => fake()->dateTimeBetween('-6 months', 'now'),
-            ]);
+            foreach ($randomCourses as $course) {
+                // Kiểm tra trùng lặp Enrollment
+                $exists = Enrollment::where('user_id', $student->id)
+                    ->where('course_id', $course->id)
+                    ->exists();
+
+                if (!$exists) {
+                    // Tính toán chia tiền
+                    $price = $course->price;
+                    $tax = $price * 0.10;
+                    $adminFee = $price * 0.20;
+                    $teacherEarning = $price - $tax - $adminFee;
+
+                    // Tạo Transaction (Chỉ có loại PAYMENT, không có DEPOSIT)
+                    $transaction = Transaction::factory()->create([
+                        'user_id' => $student->id,
+                        'course_id' => $course->id,
+
+                        'total_amount' => $price,
+                        'tax_amount' => $tax,
+                        'admin_fee' => $adminFee,
+                        'teacher_earning' => $teacherEarning,
+
+                        'status' => 'success',
+                        'payout_status' => 'pending', // Mặc định là chưa trả lương cho GV
+
+                        'created_at' => fake()->dateTimeBetween('-3 months', 'now'),
+                    ]);
+
+                    // ❌ KHÔNG CÒN TRỪ VÍ USER NỮA
+                    // $student->decrement('account_balance', $price); -> XÓA
+
+                    // ❌ KHÔNG CỘNG VÍ GV NGAY LẬP TỨC NỮA (Chờ Admin Payout)
+                    // $course->teacher->increment('account_balance', $teacherEarning); -> XÓA
+
+                    // Cấp quyền học ngay lập tức
+                    Enrollment::firstOrCreate([
+                        'user_id' => $student->id,
+                        'course_id' => $course->id,
+                    ], [
+                        'created_at' => $transaction->created_at
+                    ]);
+                }
+            }
         }
     }
 }

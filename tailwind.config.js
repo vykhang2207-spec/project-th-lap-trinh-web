@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -12,7 +13,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                // 👇 Thay đổi dòng này: Đặt 'Be Vietnam Pro' làm font mặc định (sans)
+                sans: ['"Be Vietnam Pro"', ...defaultTheme.fontFamily.sans],
             },
         },
     },

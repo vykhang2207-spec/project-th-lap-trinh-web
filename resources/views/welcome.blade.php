@@ -20,8 +20,12 @@
             {{-- Banner Quảng Cáo --}}
             <div class="mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-8 text-white relative overflow-hidden">
                 <div class="relative z-10">
-                    <h1 class="text-4xl font-bold mb-2">Học Lập Trình Từ Con Số 0</h1>
-                    <p class="text-lg opacity-90">Khám phá các khóa học thực chiến từ cơ bản đến nâng cao.</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight leading-tight">
+                        Học Lập Trình Từ Con Số 0
+                    </h1>
+                    <p class="text-lg md:text-xl opacity-90 font-medium text-gray-200">
+                        Khám phá các khóa học thực chiến từ cơ bản đến nâng cao.
+                    </p>
                 </div>
                 {{-- Trang trí nhẹ --}}
                 <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>

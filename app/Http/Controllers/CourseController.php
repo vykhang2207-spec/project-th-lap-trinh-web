@@ -6,7 +6,7 @@ use App\Models\Course;
 use App\Models\CourseReaction; // Nhớ import model này
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Helpers\IntelephenseHelpers as AuthHelper;
 
 class CourseController extends Controller
 {
