@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('description');
             $table->string('image_path')->nullable(); // Đường dẫn ảnh bìa
             $table->decimal('price', 10, 2); // Giá tiền (ví dụ: 10 chữ số, 2 số thập phân)
-
             // Trạng thái: 0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối
             $table->tinyInteger('is_approved')->default(0);
             $table->timestamps();

@@ -12,17 +12,23 @@ class CourseFactory extends Factory
 
     public function definition(): array
     {
-        // Đảm bảo lấy ID của Giảng viên có sẵn hoặc tạo mới nếu chưa có
-        $teacherId = User::where('role', 'teacher')->inRandomOrder()->value('id') ?? User::factory()->teacher()->create()->id;
-
         return [
-            'teacher_id' => $teacherId,
-            'title' => fake()->jobTitle() . ' Mastery Course',
-            'description' => fake()->realText(500),
+            // Lấy ID giáo viên ngẫu nhiên hoặc tạo mới
+            'teacher_id' => User::where('role', 'teacher')->inRandomOrder()->value('id')
+                ?? User::factory()->state(['role' => 'teacher'])->create()->id,
+
+            'title' => fake()->jobTitle() . ' Course',
+            // ❌ XÓA DÒNG SLUG Ở ĐÂY ĐI VÌ MIGRATION KHÔNG CÓ
+
+            'description' => fake()->paragraph(),
+
+            // ✅ Dùng image_path cho khớp migration
             'image_path' => 'https://loremflickr.com/640/360/tech,programming?random=' . rand(1, 1000),
-            'price' => fake()->numberBetween(100000, 1000000),
-            // 80% khóa học được duyệt, 20% chờ duyệt
-            'is_approved' => fake()->boolean(80),
+
+            'price' => fake()->numberBetween(100000, 2000000),
+
+            // ✅ Dùng is_approved (tinyInteger) cho khớp migration
+            'is_approved' => fake()->randomElement([0, 1, 2]),
         ];
     }
 }
