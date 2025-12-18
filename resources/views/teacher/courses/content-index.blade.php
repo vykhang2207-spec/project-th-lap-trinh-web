@@ -1,5 +1,5 @@
 <x-app-layout>
-    {{-- 🟢 1. KHAI BÁO LOGIC MODAL & CRUD (Đã nâng cấp để hỗ trợ Sửa) --}}
+    {{-- 1. KHAI BÁO LOGIC MODAL & CRUD --}}
     <div x-data="{ 
         showModal: false, 
         isEditMode: false,                // Biến này để biết đang Thêm hay đang Sửa
@@ -73,7 +73,7 @@
         <div class="py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                {{-- KHỐI THÊM CHƯƠNG MỚI --}}
+                {{--  THÊM CHƯƠNG --}}
                 <div class="mb-10">
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center mb-6">
@@ -150,13 +150,13 @@
                                         </div>
                                         <div class="flex items-center gap-2">
 
-                                            {{-- 🟢 NÚT SỬA (Đã gắn action) --}}
+                                            {{--  NÚT SỬA (Đã gắn action) --}}
                                             <button type="button" @click="openEditModal({{ $lesson }}, '{{ route('teacher.lessons.update', $lesson->id) }}', '{{ addslashes($chapter->title) }}')" class="px-2 py-1.5 text-xs font-medium text-gray-200 dark:text-gray-200 bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-all duration-200">
                                                 Sửa
                                             </button>
 
-                                            {{-- 🔴 NÚT XÓA (Đã gắn form delete) --}}
-                                            {{-- Dùng class 'contents' để giữ nguyên layout flexbox, không bị vỡ --}}
+                                            {{--  NÚT XÓA (Đã gắn form delete) --}}
+                                           
                                             <form action="{{ route('teacher.lessons.destroy', $lesson->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài học này không?');" class="contents">
                                                 @csrf
                                                 @method('DELETE')
@@ -182,7 +182,7 @@
                             </div>
                             @endif
 
-                            {{-- NÚT THÊM BÀI HỌC (FOOTER) --}}
+                            {{-- NÚT THÊM BÀI HỌC  --}}
                             <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 dark:border-gray-700">
                                 <button type="button" @click="openAddModal('{{ $chapter->id }}', '{{ addslashes($chapter->title) }}')" class="w-full group flex items-center justify-center gap-2 md:gap-3 px-4 py-3 md:px-5 md:py-4 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg md:rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
                                     <svg class="w-5 h-5 md:w-6 md:h-6 text-white group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@
             </div>
         </div>
 
-        {{-- 🟢 2. MODAL DÙNG CHUNG (THÊM & SỬA) --}}
+        {{--  2. MODAL DÙNG CHUNG (THÊM & SỬA) --}}
         <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             {{-- Backdrop --}}
             <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity"></div>
@@ -215,7 +215,7 @@
                     {{-- Form: Action động dựa trên biến formAction --}}
                     <form method="POST" :action="formAction">
                         @csrf
-                        {{-- 🟢 Nếu là Edit Mode thì thêm method PUT --}}
+                        {{--  Nếu là Edit Mode thì thêm method PUT --}}
                         <input type="hidden" name="_method" value="PUT" :disabled="!isEditMode">
 
                         {{-- Header Modal --}}

@@ -18,13 +18,13 @@
 <body class="font-sans text-gray-900 antialiased">
     <div class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
 
-        {{-- 👇 THÊM DÒNG NÀY: Để hiển thị thanh Navbar --}}
+        {{-- Hien thi thanh Navbar --}}
         @include('layouts.navigation')
 
-        {{-- Phần Form đăng ký sẽ nằm ở giữa --}}
+        {{-- Container chinh giu form o giua man hinh --}}
         <div class="flex-grow flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
 
-            {{-- Logo to ở giữa (Nếu thấy thừa vì Navbar đã có logo thì có thể xóa đoạn này) --}}
+            {{-- Logo lon o giua --}}
             <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />

@@ -4,54 +4,62 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Transaction;
 use App\Models\Payout;
 use Illuminate\Support\Facades\DB;
 
 class AdminPayoutController extends Controller
 {
-
-    // 1. Trang danh sách các GV cần trả lương
+    // Danh sach giao vien can tra luong
     public function index()
     {
-        // Lấy danh sách GV có số dư pending > 0
+        // Tinh tong tien dang cho (pending) cua moi giao vien
         $teachers = User::where('role', 'teacher')
-            ->withSum(['transactions as pending_amount' => function ($q) {
-                $q->where('status', 'success')->where('payout_status', 'pending');
+            ->withSum(['sales as pending_amount' => function ($query) {
+                $query->where('payout_status', 'pending');
             }], 'teacher_earning')
-            ->having('pending_amount', '>', 0) // Chỉ hiện người có tiền
+            ->orderByDesc('pending_amount')
             ->get();
+
+        // Loc bo giao vien co so du bang 0
+        $teachers = $teachers->filter(function ($teacher) {
+            return $teacher->pending_amount > 0;
+        });
 
         return view('admin.payouts.index', compact('teachers'));
     }
 
-    // 2. Xử lý trả lương cho 1 GV (Quyết toán)
+    // Xu ly thanh toan (Quyet toan)
     public function store(Request $request)
     {
+        $request->validate(['teacher_id' => 'required|exists:users,id']);
         $teacher = User::findOrFail($request->teacher_id);
 
-        // Tính tổng tiền đang nợ GV này
-        $pendingAmount = Transaction::whereHas('course', fn($q) => $q->where('teacher_id', $teacher->id))
-            ->pendingPayout()
+        // Tinh lai so tien can tra
+        $pendingAmount = $teacher->sales()
+            ->where('payout_status', 'pending')
             ->sum('teacher_earning');
 
-        if ($pendingAmount <= 0) return back()->with('error', 'Giáo viên này không có số dư cần trả.');
+        if ($pendingAmount <= 0) {
+            return back()->with('error', 'Giáo viên này không có số dư cần trả (Số dư = 0).');
+        }
 
         DB::transaction(function () use ($teacher, $pendingAmount) {
-            // A. Tạo bản ghi Payout
+            // Tao lich su thanh toan
             Payout::create([
                 'teacher_id' => $teacher->id,
-                'amount' => $pendingAmount,
-                'batch_id' => 'PAY_' . now()->format('mY'), // VD: PAY_122025
-                'note' => 'Quyết toán doanh thu tháng ' . now()->format('m/Y'),
+                'amount'     => $pendingAmount,
+                'batch_id'   => 'PAY_' . now()->format('dmY_His'),
+                'status'     => 'completed',
+                'paid_at'    => now(),
+                'note'       => 'Quyết toán doanh thu',
             ]);
 
-            // B. Đánh dấu tất cả giao dịch cũ là "Đã trả" (completed)
-            Transaction::whereHas('course', fn($q) => $q->where('teacher_id', $teacher->id))
-                ->pendingPayout()
+            // Cap nhat trang thai giao dich thanh da tra
+            $teacher->sales()
+                ->where('payout_status', 'pending')
                 ->update(['payout_status' => 'completed']);
         });
 
-        return back()->with('success', 'Đã quyết toán ' . number_format($pendingAmount) . 'đ cho GV ' . $teacher->name);
+        return back()->with('success', 'Đã quyết toán thành công ' . number_format($pendingAmount) . 'đ cho GV: ' . $teacher->name);
     }
 }

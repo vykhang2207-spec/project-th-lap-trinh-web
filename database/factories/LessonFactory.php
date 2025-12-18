@@ -12,45 +12,39 @@ class LessonFactory extends Factory
 
     public function definition(): array
     {
-        // Đảm bảo lấy ID của Chương học có sẵn
         $chapterId = Chapter::inRandomOrder()->value('id') ?? Chapter::factory()->create()->id;
 
-        // Danh sách video thật từ kênh Net Ninja (Dạng Embed Link)
+        // Danh sach video hoc tap that tu Net Ninja
         $netNinjaVideos = [
-            // Laravel 10/11 Tutorial
-            'https://www.youtube.com/embed/qS0yXqTRk0Y',
-            'https://www.youtube.com/embed/376MG1k0nCQ',
-
-            // Full Modern React Tutorial
-            'https://www.youtube.com/embed/j942wKiXFu8',
-            'https://www.youtube.com/embed/kVeOpcw4LCY',
-
-            // Vue 3 Tutorial
-            'https://www.youtube.com/embed/Yb9O4a3X4TI',
-
-            // Flutter for Beginners
-            'https://www.youtube.com/embed/1xipg02Wu8s',
-
-            // HTML & CSS Crash Course
-            'https://www.youtube.com/embed/hu-q2zYwEYs',
-            'https://www.youtube.com/embed/PMvX07P18VQ',
-
-            // Node.js Crash Course
-            'https://www.youtube.com/embed/zb3Qk8SG5Ms',
-
-            // Modern JavaScript
-            'https://www.youtube.com/embed/iWOYAxlnaww',
+            'https://www.youtube.com/embed/DKnn8TlJ4MA',
+            'https://www.youtube.com/embed/RT0DZYYE3wc',
+            'https://www.youtube.com/embed/thOAk7dhn1c',
+            'https://www.youtube.com/embed/cNE0HIRpeiU',
+            'https://www.youtube.com/embed/xXOJCHWV6dU',
+            'https://www.youtube.com/embed/giMnl4gpZ_I',
+            'https://www.youtube.com/embed/cjb1PdA_ZJw',
+            'https://www.youtube.com/embed/PgeP3vsWbTc',
+            'https://www.youtube.com/embed/0LCAS5WXnL4',
+            'https://www.youtube.com/embed/vG3GcBDB9rs',
+            'https://www.youtube.com/embed/tV9Hb0A-lzc',
+            'https://www.youtube.com/embed/HNTsM2ZmoFQ',
+            'https://www.youtube.com/embed/UPuULGjWRsQ',
+            'https://www.youtube.com/embed/awStsyqYcbc',
+            'https://www.youtube.com/embed/tPhp3PunmuU',
+            'https://www.youtube.com/embed/LTvzvQhielk',
+            'https://www.youtube.com/embed/HdvFVMaaT4Y',
+            'https://www.youtube.com/embed/jRXDwAuiGZY',
+            'https://www.youtube.com/embed/5e8W93UQ_98',
+            'https://www.youtube.com/embed/J5mBbi-ndY0',
+            'https://www.youtube.com/embed/TIktqsjpIik',
+            'https://www.youtube.com/embed/hN0OM8eIWdU',
+            'https://www.youtube.com/embed/YkwbsesO3Rs',
         ];
 
         return [
             'chapter_id' => $chapterId,
-            // Tạo tiêu đề bài học nghe cho "nguy hiểm" một chút
             'title' => fake()->randomElement(['Introduction to ', 'Setting up ', 'Advanced ', 'Mastering ']) . fake()->word() . ' ' . fake()->randomElement(['Concept', 'Pattern', 'Workflow', 'Basics']),
-
-            // Chọn ngẫu nhiên 1 video từ danh sách trên
             'video_url' => fake()->randomElement($netNinjaVideos),
-
-            // Số thứ tự (Seeder sẽ ghi đè lại cái này cho đẹp sau)
             'order_index' => fake()->numberBetween(1, 15),
         ];
     }

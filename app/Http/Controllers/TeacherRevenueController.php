@@ -8,12 +8,13 @@ use App\Models\Transaction;
 
 class TeacherRevenueController extends Controller
 {
+    // Thong ke doanh thu giao vien
     public function index()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 1. Lịch sử Bán khóa học (Để GV biết mình bán được gì)
+        // Lich su ban khoa hoc
         $transactions = Transaction::whereHas('course', function ($query) use ($user) {
             $query->where('teacher_id', $user->id);
         })
@@ -22,15 +23,12 @@ class TeacherRevenueController extends Controller
             ->latest()
             ->paginate(10, ['*'], 'trans_page');
 
-        // 2. Lịch sử Nhận Lương (Payouts)
-        // Sử dụng relationship payouts() mới tạo trong User Model
+        // Lich su nhan luong
         $payouts = $user->payouts()
             ->latest()
             ->paginate(5, ['*'], 'payout_page');
 
-        // 3. CÁC CON SỐ THỐNG KÊ
-
-        // A. Doanh thu chờ thanh toán (Pending Balance)
+        // Tinh tong tien dang cho thanh toan
         $pendingBalance = Transaction::whereHas('course', function ($query) use ($user) {
             $query->where('teacher_id', $user->id);
         })
@@ -38,17 +36,20 @@ class TeacherRevenueController extends Controller
             ->where('payout_status', 'pending')
             ->sum('teacher_earning');
 
-        // B. Tổng thu nhập trọn đời (Lifetime Earnings)
+        // Tinh tong thu nhap tu truoc den nay
         $lifetimeEarnings = Transaction::whereHas('course', function ($query) use ($user) {
             $query->where('teacher_id', $user->id);
         })
             ->where('status', 'success')
             ->sum('teacher_earning');
 
-        // C. Tổng tiền đã được Admin trả (Total Paid)
-        $totalPaid = $user->payouts()
-            ->where('status', 'completed')
-            ->sum('amount');
+        // Tinh tong tien da thuc nhan
+        $totalPaid = Transaction::whereHas('course', function ($query) use ($user) {
+            $query->where('teacher_id', $user->id);
+        })
+            ->where('status', 'success')
+            ->where('payout_status', 'completed')
+            ->sum('teacher_earning');
 
         return view('teacher.revenue.index', compact(
             'transactions',

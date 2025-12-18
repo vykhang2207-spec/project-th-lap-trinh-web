@@ -127,7 +127,7 @@
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
 
-                {{-- 👇 HIỂN THỊ SỐ DƯ VÍ TRÊN MOBILE --}}
+                {{-- HIỂN THỊ SỐ DƯ VÍ TRÊN MOBILE --}}
                 @if(Auth::user()->role === 'admin' || Auth::user()->role === 'teacher')
                 <div class="mt-1 text-sm text-green-600 font-bold">
                     Ví: {{ number_format(Auth::user()->account_balance) }} đ

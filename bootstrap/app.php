@@ -1,6 +1,5 @@
 <?php
 
-// 1. DÒNG USE CẦN THIẾT ĐỂ LARAVEL TÌM THẤY MIDDLEWARE
 use App\Http\Middleware\CheckUserRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,12 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-
-        // 2. ĐĂNG KÝ ALIAS CHO MIDDLEWARE
+        // Dang ky alias de su dung middleware trong route
         $middleware->alias([
-            'role' => CheckUserRole::class, // <-- Bỏ '\App\Http\Middleware\' vì đã 'use' ở trên
+            'role' => CheckUserRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // ... (Phần xử lý exception giữ nguyên)
+        // Xu ly cac ngoai le neu can
     })->create();

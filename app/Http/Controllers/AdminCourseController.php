@@ -7,25 +7,22 @@ use App\Models\Course;
 
 class AdminCourseController extends Controller
 {
+    // Lay danh sach tat ca khoa hoc
     public function index()
     {
-        // Admin lấy TẤT CẢ khóa học (kèm thông tin giáo viên)
-        // Sắp xếp khóa mới nhất lên đầu, hoặc khóa chờ duyệt (pending) lên đầu
+        // Uu tien hien khoa chua duyet len dau
         $courses = Course::with('teacher')
-            ->orderBy('is_approved', 'asc') // Ưu tiên hiện khóa chưa duyệt trước
+            ->orderBy('is_approved', 'asc')
             ->latest()
             ->paginate(10);
 
         return view('admin.courses.index', compact('courses'));
     }
-    // app/Http/Controllers/AdminCourseController.php
 
+    // Duyet khoa hoc
     public function approve(Course $course)
     {
-        // Cập nhật trạng thái
         $course->update(['is_approved' => true]);
-
-        // Quay lại trang danh sách và báo thành công
         return redirect()->back()->with('success', 'Đã duyệt khóa học thành công!');
     }
 }

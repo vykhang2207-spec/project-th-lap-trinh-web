@@ -10,15 +10,14 @@ class ChapterSeeder extends Seeder
 {
     public function run(): void
     {
-        // Lấy tất cả Khóa học
+        // Lay tat ca khoa hoc
         Course::all()->each(function (Course $course) {
-            // Tạo 3-5 Chương cho mỗi khóa
-            // Sử dụng sequence để order_index tăng dần: 1, 2, 3...
+            // Tao 3-5 chuong cho moi khoa hoc
             Chapter::factory()
                 ->count(rand(3, 5))
                 ->sequence(fn($sequence) => [
                     'order_index' => $sequence->index + 1,
-                    'title' => 'Chương ' . ($sequence->index + 1) . ': Kiến thức nền tảng', // Tiêu đề khớp với số thứ tự
+                    'title' => 'Chương ' . ($sequence->index + 1) . ': Kiến thức nền tảng',
                 ])
                 ->create([
                     'course_id' => $course->id,

@@ -19,7 +19,6 @@ class EnrollmentFactory extends Factory
         return [
             'user_id' => $userId,
             'course_id' => $courseId,
-            // (Lưu ý: Bảng này có unique key (user_id, course_id), cần đảm bảo Seeder không trùng lặp)
         ];
     }
 }

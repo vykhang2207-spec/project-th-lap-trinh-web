@@ -10,10 +10,10 @@ class EnrollmentSeeder extends Seeder
 {
     public function run(): void
     {
-        // 👇 SỬA DÒNG NÀY: Thêm điều kiện where('type', 'payment')
+        // Lay cac giao dich thanh cong
         $successfulTransactions = Transaction::where('status', 'success')
-            ->where('type', 'payment') // Chỉ lấy giao dịch mua khóa học
-            ->whereNotNull('course_id') // Chắc ăn là có ID khóa học
+            ->where('type', 'payment')
+            ->whereNotNull('course_id')
             ->get();
 
         foreach ($successfulTransactions as $transaction) {

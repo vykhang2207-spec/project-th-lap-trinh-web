@@ -5,28 +5,28 @@
         </h2>
     </x-slot>
 
-    {{-- NỀN CHUNG --}}
+    {{-- Nen chung --}}
     <div class="py-12 bg-gray-100 dark:bg-gray-900">
 
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- THÔNG BÁO FLASH --}}
+            {{-- Thong bao Flash --}}
             @if (session('status'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" class="mb-6 bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded relative backdrop-blur-sm">
                 {{ session('status') }}
             </div>
             @endif
 
-            {{-- CONTAINER CHÍNH --}}
+            {{-- Container chinh --}}
             <div class="bg-gray-900/80 backdrop-blur-xl text-gray-100 overflow-hidden shadow-2xl sm:rounded-3xl p-8 space-y-12 border border-white/10">
 
-                {{-- 1. TIÊU ĐỀ KHÓA HỌC --}}
+                {{-- 1. Tieu de khoa hoc --}}
                 <div class="text-center">
                     <h1 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6 tracking-tight drop-shadow-lg">
                         {{ $course->title }}
                     </h1>
 
-                    {{-- 2. THANH THỐNG KÊ --}}
+                    {{-- 2. Thanh thong ke (Like/Dislike/Enrollments) --}}
                     <div class="flex flex-wrap justify-center items-center gap-3" x-data="{ 
                             likes: {{ $course->likes_count ?? 0 }}, 
                             dislikes: {{ $course->dislikes_count ?? 0 }}, 
@@ -51,7 +51,7 @@
                             }
                          }">
 
-                        {{-- Số học viên --}}
+                        {{-- So hoc vien --}}
                         <div class="flex items-center px-4 py-2 bg-[#1f2937] rounded-lg shadow-sm" title="Số học viên">
                             <svg class="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -59,14 +59,14 @@
                             <span class="text-xl font-bold text-gray-200">{{ $course->enrollments_count }}</span>
                         </div>
 
-                        {{-- Nút Like --}}
+                        {{-- Nut Like --}}
                         <button @click="react('like')" :disabled="isLoading" class="flex items-center px-4 py-2 bg-[#1f2937] rounded-lg transition hover:bg-gray-700 shadow-sm group" :class="myReaction === 'like' ? 'ring-1 ring-green-500 bg-gray-800' : ''">
                             <svg class="w-4 h-4 mr-1 transition-colors duration-200" :class="myReaction === 'like' ? 'fill-current' : 'text-green-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
                             <span x-text="likes"></span>
                         </button>
 
-                        {{-- Nút Dislike --}}
+                        {{-- Nut Dislike --}}
                         <button @click="react('dislike')" :disabled="isLoading" class="flex items-center px-4 py-2 bg-[#1f2937] rounded-lg transition hover:bg-gray-700 shadow-sm group" :class="myReaction === 'dislike' ? 'ring-1 ring-red-500 bg-gray-800' : ''">
                             <svg class="w-4 h-4 mr-1 transition-colors duration-200" :class="myReaction === 'dislike' ? 'fill-current' : 'text-red-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" /></svg>
@@ -75,13 +75,13 @@
                     </div>
                 </div>
 
-                {{-- 3. HÌNH ẢNH KHÓA HỌC --}}
+                {{-- 3. Hinh anh khoa hoc --}}
                 <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60"></div>
                     <img src="{{ Str::startsWith($course->image_path, 'http') ? $course->image_path : asset('storage/' . $course->image_path) }}" alt="{{ $course->title }}" class="w-full h-auto max-h-[500px] object-cover transform group-hover:scale-105 transition duration-700" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x450?text=No+Image'">
                 </div>
 
-                {{-- 4. NÚT HÀNH ĐỘNG --}}
+                {{-- 4. Nut hanh dong (Mua/Hoc) --}}
                 <div class="bg-gray-800/40 p-8 rounded-2xl text-center border border-white/10 backdrop-blur-md shadow-inner">
                     @auth
                     @if(Auth::user()->enrollments->contains('course_id', $course->id))
@@ -108,7 +108,7 @@
                     @endauth
                 </div>
 
-                {{-- 5. GIỚI THIỆU --}}
+                {{-- 5. Gioi thieu khoa hoc --}}
                 <div class="prose prose-lg prose-invert max-w-none text-gray-300">
                     <h3 class="text-3xl font-bold mb-6 text-white flex items-center"><span class="bg-indigo-500 w-2 h-8 mr-4 rounded-full"></span>Giới thiệu khóa học</h3>
                     <div class="leading-relaxed whitespace-pre-line text-lg text-gray-300/90">{{ $course->description }}</div>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
 
-                {{-- 6. NỘI DUNG BÀI HỌC --}}
+                {{-- 6. Noi dung bai hoc (Mục lục) --}}
                 <div>
                     <h3 class="text-3xl font-bold mb-8 text-white flex items-center"><span class="bg-indigo-500 w-2 h-8 mr-4 rounded-full"></span>Nội dung bài học</h3>
                     @if($course->chapters->count() > 0)
@@ -192,7 +192,7 @@
                     @endif
                 </div>
 
-                {{-- 7. BÌNH LUẬN & HỎI ĐÁP --}}
+                {{-- 7. Binh luan & Hoi dap --}}
                 <div class="pt-10 border-t border-white/10">
                     <h3 class="text-3xl font-bold mb-8 text-white flex items-center"><span class="bg-indigo-500 w-2 h-8 mr-4 rounded-full"></span>Bình luận & Hỏi đáp</h3>
 
@@ -222,13 +222,13 @@
                             <div class="flex-grow">
                                 <div class="bg-gray-800/80 p-5 rounded-2xl rounded-tl-none border border-white/10 group-hover:border-gray-600/80 transition shadow-sm relative top-2">
                                     <div class="flex justify-between items-start mb-3">
-                                        {{-- Tên và thời gian --}}
+                                        {{-- Ten va thoi gian --}}
                                         <div>
                                             <h4 class="font-bold text-white text-lg">{{ $comment->user->name }}</h4>
                                             <span class="text-sm text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
                                         </div>
 
-                                        {{-- 👇 LOGIC XÓA BÌNH LUẬN (CHÍNH CHỦ HOẶC ADMIN) --}}
+                                        {{-- Nut xoa binh luan (Cho Admin hoac chinh chu) --}}
                                         @if(Auth::check() && (Auth::id() === $comment->user_id || Auth::user()->role === 'admin'))
                                         <form action="{{ route('comment.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa bình luận này không?');">
                                             @csrf

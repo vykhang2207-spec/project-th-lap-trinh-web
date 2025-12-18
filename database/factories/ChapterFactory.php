@@ -12,7 +12,7 @@ class ChapterFactory extends Factory
 
     public function definition(): array
     {
-        // Đảm bảo lấy ID của Khóa học có sẵn
+        // Lay id khoa hoc co san hoac tao moi
         $courseId = Course::inRandomOrder()->value('id') ?? Course::factory()->create()->id;
 
         return [

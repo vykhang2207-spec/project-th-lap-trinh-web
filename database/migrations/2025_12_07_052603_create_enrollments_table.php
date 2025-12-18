@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('enrollments', function (Blueprint $table) {
@@ -16,16 +13,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('course_id')->constrained('courses');
 
-            // Đảm bảo mỗi user chỉ có 1 bản ghi đăng ký cho 1 course
+            // Moi user chi mua khoa hoc 1 lan
             $table->unique(['user_id', 'course_id']);
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('enrollments');

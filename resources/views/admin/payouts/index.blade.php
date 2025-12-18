@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- Thông báo --}}
+            {{-- Thong bao thanh cong hoac loi --}}
             @if(session('success'))
             <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">✅ {{ session('success') }}</div>
             @endif
@@ -20,6 +20,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-lg font-bold mb-4">Danh sách Giảng viên cần thanh toán</h3>
 
+                    {{-- Kiem tra neu danh sach trong --}}
                     @if($teachers->isEmpty())
                     <p class="text-gray-500 text-center py-4">Hiện không có giáo viên nào có số dư cần trả.</p>
                     @else
@@ -36,10 +37,13 @@
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach($teachers as $teacher)
                                 <tr>
+                                    {{-- Thong tin giao vien --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="font-bold">{{ $teacher->name }}</div>
                                         <div class="text-sm text-gray-500">{{ $teacher->email }}</div>
                                     </td>
+
+                                    {{-- Thong tin ngan hang --}}
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         @if($teacher->bank_account_number)
                                         <div class="font-bold">{{ $teacher->bank_name }}</div>
@@ -49,9 +53,13 @@
                                         <span class="text-red-500 italic">Chưa cập nhật</span>
                                         @endif
                                     </td>
+
+                                    {{-- So tien cho tra --}}
                                     <td class="px-6 py-4 text-right font-bold text-indigo-600 text-lg">
                                         {{ number_format($teacher->pending_amount) }} đ
                                     </td>
+
+                                    {{-- Nut xac nhan da chuyen khoan --}}
                                     <td class="px-6 py-4 text-center">
                                         <form action="{{ route('admin.payouts.store') }}" method="POST" onsubmit="return confirm('Xác nhận đã chuyển khoản {{ number_format($teacher->pending_amount) }}đ cho GV này?');">
                                             @csrf

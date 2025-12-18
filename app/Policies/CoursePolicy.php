@@ -8,38 +8,28 @@ use Illuminate\Auth\Access\Response;
 
 class CoursePolicy
 {
-    // Bỏ qua check Policy nếu User là Admin
+    // Admin co quyen thuc hien moi hanh dong
     public function before(User $user, string $ability): bool|null
     {
         if ($user->role === 'admin') {
-            return true; // Admin có quyền làm MỌI THỨ
+            return true;
         }
-        return null; // Tiếp tục kiểm tra các hàm bên dưới
+        return null;
     }
 
-    /**
-     * Cho phép User tạo một Khóa học mới.
-     * (Chỉ Giảng viên mới được tạo khóa học)
-     */
+    // Chi giao vien moi duoc tao khoa hoc
     public function create(User $user): bool
     {
         return $user->role === 'teacher';
     }
 
-    /**
-     * Cho phép User cập nhật (update) Khóa học.
-     * (Chỉ Giảng viên sở hữu khóa học đó mới được sửa)
-     */
+    // Chi giao vien so huu khoa hoc moi duoc sua
     public function update(User $user, Course $course): bool
     {
-        // User phải là Giảng viên VÀ ID của User phải khớp với teacher_id của khóa học
         return $user->role === 'teacher' && $user->id === $course->teacher_id;
     }
 
-    /**
-     * Cho phép User xóa Khóa học.
-     * (Giống như update, chỉ Giảng viên sở hữu mới được xóa)
-     */
+    // Chi giao vien so huu khoa hoc moi duoc xoa
     public function delete(User $user, Course $course): bool
     {
         return $user->role === 'teacher' && $user->id === $course->teacher_id;
